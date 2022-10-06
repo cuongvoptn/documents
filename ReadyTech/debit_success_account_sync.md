@@ -1,7 +1,10 @@
 # DebitSuccess Account Sync
 ## Update Party payment plan status to closed when Debitsuccess account is closed
+- First, Find a party payment plan has type `DebitSucess` and status is `Signed` to test Update Party payment plan status to closed when Debitsuccess account is closed:
 
-- First, Need to update Debit Success account status is `Closed`
+![Screenshot_1](https://user-images.githubusercontent.com/93499172/194260393-b01da794-554e-454f-9f8b-b270ca8fb9a1.png)
+
+- Next, Need to update Debit Success account status is `Closed`
   - Step 1: Retrieve an access token to use for Authorization. If there is no access token, when accessing debitsuccess will give an error no access (Status: 401 Unauthorized). Call API:
       
       - URL use access: `https://oc-sbox.debitsuccess.com/identity/connect/token`
@@ -21,62 +24,8 @@
           }
         ```
         In which, *access_token* to use login for DebitSuccess CustomerServices.
-  - Step 2: Get a list of all accounts to find the account to close. Call API with method GET:
-    - URL for access: `https://oc-sbox.debitsuccess.com/CustomerServices/v1.0/accounts`
-    - Method: `GET`
-    - Authorization choosing Bearer Token: Access Token from step 1 Retrieve an access token.
-    - When send request to https://oc-sbox.debitsuccess.com/CustomerServices/v1.0/accounts, receive response same as:
-      ```json
-      {
-        "accounts": [
-            {
-                "accountId": "JBRS888995",
-                "accountExternalId": "1",
-                "customerId": 22159403,
-                "businessAccountId": "JBRS",
-                "termType": "Payments",
-                "term": 4,
-                "accountCode": "",
-                "accountNotes": "",
-                "fixedTerm": true,
-                "nextBillingDate": "2022-10-11",
-                "lastBillingDateTime": "2022-06-06T13:01:32.473Z",
-                "overdueStatus": 0,
-                "overdueAmountPayment": 100.00,
-                "overdueAmountFee": 50.00,
-                "lastReversalReason": "Declined",
-                "closeReason": "",
-                "suspended": false,
-                "paymentStopped": false,
-                "paymentStopEndDate": "",
-                "catchUpAmount": 0.00,
-                "catchUpEndDate": "",
-                "paymentInAdvanceAmount": 0.00,
-                "paymentInAdvanceEndDate": "",
-                "accountStartDate": "2022-05-03",
-                "accountCloseDateTime": "",
-                "accountLoadedDateTime": "2022-04-26T05:36:34.630Z",
-                "lastUpdatedDateTime": "2022-10-04T13:30:20.323Z",
-                "accruedContractAmount": 100.00,
-                "originalContractAmount": 100.00,
-                "outstandingRecurringAmount": 100.00,
-                "outstandingOneOffAmount": 0.00,
-                "outstandingFeeAmount": 50.00,
-                "projectedFinishDate": "2022-11-08",
-                "paymentMethodToken": "030AF16F-8F4E-472E-BAA9-353916213D11",
-                "collectionStopReason": "",
-                "activePaySchedule": {
-                    "frequency": "Weekly",
-                    "installment": 25.00
-                }
-            }
-        ],
-        "responseMetadata": {
-        "nextCursor": "MTE0OTIzNjc=",
-        "hasNext": true
-      }
-      ```
-  - Step 3: Update status 'Closed' for DebitSuccess Acount. You send request same as:
+  
+  - Step 2: Update status 'Closed' for DebitSuccess Acount. You send request same as:
     - URL: `https://oc-sbox.debitsuccess.com/CustomerServices/v1.0/accounts/{accountId}/close`
     - Method: `POST`
     - Authorization choosing Bearer Token: Access Token from step 1 Retrieve an access token.
@@ -86,10 +35,65 @@
         "closureNotes": "Immediately close account"
       }
       ```
+    **Note:** `accountId` is value Account ID on section DebitSuccess of party payment plan need to test.
     - After that response same:
       ```json
       {
         "message": "Account successfully closed"
       }
       ```
-    
+  - If there need to check account status, you can call API same as:
+    - URL: `https://oc-sbox.debitsuccess.com/CustomerServices/v1.0/accounts/{accountId}`
+    - Method: `GET`
+    - Authorization choosing Bearer Token: Access Token from step 1 Retrieve an access token.
+    - Body (x-www-form-urlendcode):
+      ```
+      grant_type: client_credentials
+      client_id: 2CEFDD8D-F5A7-4714-AD36-3958CAAA5FAC
+      client_secret: 1CD8F476-B957-4556-9709-0F4B396B0771
+      ```
+    - After send request, you will receive response same:
+      ```json
+      {
+        "accountId": "JBRS888804",
+        "accountExternalId": "23",
+        "customerId": 22160162,
+        "businessAccountId": "JBRS",
+        "termType": "Payments",
+        "term": 4,
+        "accountCode": "",
+        "accountNotes": "",
+        "fixedTerm": true,
+        "nextBillingDate": "2022-10-05",
+        "lastBillingDateTime": "",
+        "overdueStatus": 0,
+        "overdueAmountPayment": 28.60,
+        "overdueAmountFee": -28.60,
+        "lastReversalReason": "",
+        "closeReason": "Facility Request",
+        "suspended": false,
+        "paymentStopped": false,
+        "paymentStopEndDate": "",
+        "catchUpAmount": 0.00,
+        "catchUpEndDate": "",
+        "paymentInAdvanceAmount": 0.00,
+        "paymentInAdvanceEndDate": "",
+        "accountStartDate": "2022-10-04",
+        "accountCloseDateTime": "2022-10-05T07:52:28.263Z",
+        "accountLoadedDateTime": "2022-10-04T02:45:38.123Z",
+        "lastUpdatedDateTime": "2022-10-05T13:30:02.460Z",
+        "accruedContractAmount": 114.40,
+        "originalContractAmount": 114.40,
+        "outstandingRecurringAmount": 114.40,
+        "outstandingOneOffAmount": 0.00,
+        "outstandingFeeAmount": 0.00,
+        "projectedFinishDate": "2022-11-02",
+        "paymentMethodToken": "BA1F6686-0D40-4A91-B08A-1D368D3C22B8",
+        "collectionStopReason": "",
+        "activePaySchedule": {
+            "frequency": "Weekly",
+            "installment": 28.60
+        }
+      }
+      ```
+    - With `accountCloseDateTime` is current date.
