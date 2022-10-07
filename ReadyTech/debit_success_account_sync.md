@@ -2,10 +2,11 @@
 ## Update Party payment plan status to closed when Debitsuccess account is closed
 - First, Find a party payment plan has type `DebitSucess` and status is `Signed` to test Update Party payment plan status to closed when Debitsuccess account is closed:
 
-![Screenshot_1](https://user-images.githubusercontent.com/93499172/194260393-b01da794-554e-454f-9f8b-b270ca8fb9a1.png)
+![image](https://user-images.githubusercontent.com/93499172/194447882-c207ac6a-6f13-4dc0-8623-3f563d4251cd.png)
 
-- Next, Need to update Debit Success account status is `Closed`
-  - Step 1: Retrieve an access token to use for Authorization. If there is no access token, when accessing debitsuccess will give an error no access (Status: 401 Unauthorized). Call API:
+- Next, Need to update DebitSuccess account status is `Closed`
+  ### Call API to update DebitSuccess account is closed
+  - Step 1: Retrieve an access token to use for Authorization. If there is no access token, when accessing DebitSuccess will give an error no access (Status: 401 Unauthorized). Call API:
       
       - URL use access: `https://oc-sbox.debitsuccess.com/identity/connect/token`
       - Method: `POST`
@@ -25,7 +26,7 @@
         ```
         In which, *access_token* to use login for DebitSuccess CustomerServices.
   
-  - Step 2: Update status 'Closed' for DebitSuccess Acount. You send request same as:
+  - Step 2: Update status `Closed` for DebitSuccess Acount. You send request same as:
     - URL: `https://oc-sbox.debitsuccess.com/CustomerServices/v1.0/accounts/{accountId}/close`
     - Method: `POST`
     - Authorization choosing Bearer Token: Access Token from step 1 Retrieve an access token.
@@ -55,20 +56,20 @@
     - After send request, you will receive response same:
       ```json
       {
-        "accountId": "JBRS888804",
-        "accountExternalId": "23",
-        "customerId": 22160162,
+        "accountId": "JBRS888790",
+        "accountExternalId": "138",
+        "customerId": 22160184,
         "businessAccountId": "JBRS",
         "termType": "Payments",
         "term": 4,
         "accountCode": "",
         "accountNotes": "",
         "fixedTerm": true,
-        "nextBillingDate": "2022-10-05",
+        "nextBillingDate": "2022-10-08",
         "lastBillingDateTime": "",
         "overdueStatus": 0,
-        "overdueAmountPayment": 28.60,
-        "overdueAmountFee": -28.60,
+        "overdueAmountPayment": 0.00,
+        "overdueAmountFee": 0.00,
         "lastReversalReason": "",
         "closeReason": "Facility Request",
         "suspended": false,
@@ -78,22 +79,54 @@
         "catchUpEndDate": "",
         "paymentInAdvanceAmount": 0.00,
         "paymentInAdvanceEndDate": "",
-        "accountStartDate": "2022-10-04",
-        "accountCloseDateTime": "2022-10-05T07:52:28.263Z",
-        "accountLoadedDateTime": "2022-10-04T02:45:38.123Z",
-        "lastUpdatedDateTime": "2022-10-05T13:30:02.460Z",
-        "accruedContractAmount": 114.40,
-        "originalContractAmount": 114.40,
-        "outstandingRecurringAmount": 114.40,
+        "accountStartDate": "2022-10-08",
+        "accountCloseDateTime": "2022-10-07T01:49:33.087Z",
+        "accountLoadedDateTime": "2022-10-07T01:33:48.950Z",
+        "lastUpdatedDateTime": "2022-10-07T01:49:33.087Z",
+        "accruedContractAmount": 500.00,
+        "originalContractAmount": 500.00,
+        "outstandingRecurringAmount": 500.00,
         "outstandingOneOffAmount": 0.00,
         "outstandingFeeAmount": 0.00,
-        "projectedFinishDate": "2022-11-02",
-        "paymentMethodToken": "BA1F6686-0D40-4A91-B08A-1D368D3C22B8",
+        "projectedFinishDate": "",
+        "paymentMethodToken": "519B74D1-3496-4E00-B0FA-C502755BC1C5",
         "collectionStopReason": "",
         "activePaySchedule": {
-            "frequency": "Weekly",
-            "installment": 28.60
+            "frequency": "Monthly",
+            "installment": 125.00
         }
       }
       ```
     - With `accountCloseDateTime` is current date.
+  ### Using UI to update
+  - First access the following link: `https://oc-sbox.debitsuccess.com/SelfService/Customers`
+ 
+  ![image](https://user-images.githubusercontent.com/93499172/194445933-a003c656-d217-43c2-adae-00ba2ca08edf.png)
+
+  - Information for Login:
+  ```
+  Company ID: JobReadySolution
+  Username: Master
+  Password: #JobReadySolution1
+  ```
+  - When login the UI same as:
+
+  ![image](https://user-images.githubusercontent.com/93499172/194446042-edf756fa-e8c9-4fe3-bb6e-62d3b5ac7492.png)
+  
+  - Next, find the account need to update.
+  
+  ![image](https://user-images.githubusercontent.com/93499172/194448053-3c9495e8-09d0-4e42-8e76-15d66054a5cf.png)
+  
+  - After that, click `Cancel Account' to closed it:
+  
+  ![image](https://user-images.githubusercontent.com/93499172/194448263-a7059657-2e27-4ea4-bb2c-5fea6404e925.png)
+- Finally, you need to run integration task to Debitsucces account sync.
+  - Go to `Integration task` following Administration -> Audit / Logs -> Batch Processes -> Integration Tasks
+  
+  ![image](https://user-images.githubusercontent.com/93499172/194448906-aac0875d-001f-4858-9f2b-7ec89ac54ab3.png)
+
+  - In which, choosing `Task Type` is `Daily` and clicking `process`.
+  - When Integration task run successful, you need to reload party payment plan page to see result:
+  
+  ![image](https://user-images.githubusercontent.com/93499172/194449511-b18334f5-ab62-4ccd-901f-92f8832a0ef1.png)
+
