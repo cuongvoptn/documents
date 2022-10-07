@@ -36,7 +36,7 @@
         "closureNotes": "Immediately close account"
       }
       ```
-    **Note:** `accountId` is value Account ID on section DebitSuccess of party payment plan need to test.
+    **Note:** `accountId` is Account ID on DebitSuccess section of party payment plan need to test.
     - After that response same:
       ```json
       {
